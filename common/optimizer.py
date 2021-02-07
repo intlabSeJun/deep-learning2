@@ -12,6 +12,8 @@ class SGD:
         self.lr = lr
         
     def update(self, params, grads):
+        #print(f'SGD_params.shape:{np.array(params).shape}, grads.shape:{np.array(grads).shape}')
+        # 각 params, grads는 해당 layer에 매개변수로 저장되어 있고 이들을 묶어서 tow_layer_net에 가지고 있음.
         for i in range(len(params)):
             params[i] -= self.lr * grads[i]
 

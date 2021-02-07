@@ -40,7 +40,7 @@ class TwoLayerNet:
         return loss
 
     def backward(self, dout=1):
-        dout = self.loss_layer.backward(dout)
+        dout = self.loss_layer.backward(dout) # softmax 역전파로 나온 dx : (30,3) -> 정답 인덱스에만 음수로 나타내어짐
         for layer in reversed(self.layers):
             dout = layer.backward(dout)
         return dout

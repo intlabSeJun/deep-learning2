@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 x, t = spiral.load_data()
 print('x', x.shape)  # (300, 2)
 print('t', t.shape)  # (300, 3)
+for i in range(100,110):
+    print('x_value', x[i],'\n',t[i])
 
 # 데이터점 플롯
 N = 100

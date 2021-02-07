@@ -33,6 +33,7 @@ def cos_similarity(x, y, eps=1e-8):
     '''
     nx = x / (np.sqrt(np.sum(x ** 2)) + eps)
     ny = y / (np.sqrt(np.sum(y ** 2)) + eps)
+   # print(nx,ny,sep='\n')
     return np.dot(nx, ny)
 
 
@@ -132,6 +133,7 @@ def ppmi(C, verbose=False, eps = 1e-8):
     '''
     M = np.zeros_like(C, dtype=np.float32)
     N = np.sum(C)
+    print(N)
     S = np.sum(C, axis=0)
     total = C.shape[0] * C.shape[1]
     cnt = 0

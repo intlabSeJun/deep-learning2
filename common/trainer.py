@@ -46,7 +46,7 @@ class Trainer:
                 loss_count += 1
 
                 # 평가
-                if (eval_interval is not None) and (iters % eval_interval) == 0:
+                if (eval_interval is not None) and ((iters+1) % eval_interval) == 0:
                     avg_loss = total_loss / loss_count
                     elapsed_time = time.time() - start_time
                     print('| 에폭 %d |  반복 %d / %d | 시간 %d[s] | 손실 %.2f'
@@ -61,8 +61,8 @@ class Trainer:
         if ylim is not None:
             plt.ylim(*ylim)
         plt.plot(x, self.loss_list, label='train')
-        plt.xlabel('반복 (x' + str(self.eval_interval) + ')')
-        plt.ylabel('손실')
+        plt.xlabel('epoch (x' + str(self.eval_interval) + ')')
+        plt.ylabel('loss')
         plt.show()
 
 

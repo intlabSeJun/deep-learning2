@@ -15,24 +15,28 @@ hidden_size = 10
 learning_rate = 1.0
 
 # 데이터 읽기, 모델과 옵티마이저 생성
-x, t = spiral.load_data()
+x, t = spiral.load_data() # (300,2), (300,3) : 300개의 학습데이터가 하나의 배치당 두개의 노드로 구성, t는 3개의 class 정답레이블(one_hot)
+#print(f'x.shape:{x.shape}, type(x):{type(x)}\nt.shape:{t.shape}, type(t):{type(t)}')
 model = TwoLayerNet(input_size=2, hidden_size=hidden_size, output_size=3)
 optimizer = SGD(lr=learning_rate)
 
 # 학습에 사용하는 변수
 data_size = len(x)
-max_iters = data_size // batch_size
+max_iters = data_size // batch_size #소수점 버림.
+#print(data_size, batch_size, max_iters, 11//3);exit(1)
 total_loss = 0
 loss_count = 0
 loss_list = []
 
 for epoch in range(max_epoch):
     # 데이터 뒤섞기
-    idx = np.random.permutation(data_size)
+    idx = np.random.permutation(data_size) #0~data_size-1 숫자를 랜덤으로 섞어줌.
+    #print(f'idx.shape:{idx.shape}, idx:{idx}, sum:{sum(idx)}, {sum(i for i in range(300))}');exit(1)
+    # 섞어준 index들을 인덱싱하여 데이터 섞어준다.
     x = x[idx]
     t = t[idx]
 
-    for iters in range(max_iters):
+    for iters in range(max_iters): #10번 반복. -> 아까 랜덤하게 섞어준 데이터를 0번에서부터 300번까지 다돌려서 학습시키기위함.
         batch_x = x[iters*batch_size:(iters+1)*batch_size]
         batch_t = t[iters*batch_size:(iters+1)*batch_size]
 
@@ -55,10 +59,11 @@ for epoch in range(max_epoch):
 
 # 학습 결과 플롯
 plt.plot(np.arange(len(loss_list)), loss_list, label='train')
-plt.xlabel('반복 (x10)')
-plt.ylabel('손실')
+plt.xlabel('epoch (x10)')
+plt.ylabel('loss')
 plt.show()
 
+"""
 # 경계 영역 플롯
 h = 0.001
 x_min, x_max = x[:, 0].min() - .1, x[:, 0].max() + .1
@@ -79,3 +84,4 @@ markers = ['o', 'x', '^']
 for i in range(CLS_NUM):
     plt.scatter(x[i*N:(i+1)*N, 0], x[i*N:(i+1)*N, 1], s=40, marker=markers[i])
 plt.show()
+"""

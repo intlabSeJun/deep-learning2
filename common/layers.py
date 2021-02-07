@@ -18,9 +18,9 @@ class MatMul:
 
     def backward(self, dout):
         W, = self.params
-        dx = np.dot(dout, W.T)
-        dW = np.dot(self.x.T, dout)
-        self.grads[0][...] = dW
+        dx = np.dot(dout, W.T)  # x에 대한 역전파(기울기)
+        dW = np.dot(self.x.T, dout) # w에 대한 역전파(기울기)
+        self.grads[0][...] = dW # w에 대한 기울기를 모아둠 ( 깊은 복사 )
         return dx
 
 
@@ -38,12 +38,14 @@ class Affine:
 
     def backward(self, dout):
         W, b = self.params
-        dx = np.dot(dout, W.T)
-        dW = np.dot(self.x.T, dout)
-        db = np.sum(dout, axis=0)
+        dx = np.dot(dout, W.T) #(30,10)
+        dW = np.dot(self.x.T, dout) #(10,3)
+        db = np.sum(dout, axis=0) # 열마다 더함. @@더해줄때 앞의(sooftmax.backward) batch_size로 나누어줌으로써 1이 넘지 않게됨
+       # print(f'w.shape:{W.shape}, x.shape:{self.x.shape},dx.shape:{dx.shape}, dW.shape:{dW.shape}');exit(1)
 
         self.grads[0][...] = dW
         self.grads[1][...] = db
+        #print(f'grads:{self.grads[0].shape},{self.grads[1].shape}');exit(1)
         return dx
 
 
@@ -72,21 +74,23 @@ class SoftmaxWithLoss:
     def forward(self, x, t):
         self.t = t
         self.y = softmax(x)
-
+        #print(f'[forward]\nt.shape:{self.t.shape}')
         # 정답 레이블이 원핫 벡터일 경우 정답의 인덱스로 변환
         if self.t.size == self.y.size:
-            self.t = self.t.argmax(axis=1)
+            self.t = self.t.argmax(axis=1) # 예측한 인덱스만 저장됨.
+            #print(self.t)
 
         loss = cross_entropy_error(self.y, self.t)
         return loss
 
     def backward(self, dout=1):
         batch_size = self.t.shape[0]
-
-        dx = self.y.copy()
-        dx[np.arange(batch_size), self.t] -= 1
-        dx *= dout
-        dx = dx / batch_size
+        #print(f'[softmax_backward]\nt.shape:{self.t.shape[0]}, dx.shape:{self.y.copy().shape}');exit(1)
+        dx = self.y.copy() # softmax 통과한 값들 copy
+        dx[np.arange(batch_size), self.t] -= 1 # softmax 계층의 역전파 수행.(y1-t1, y2-t2, y3-t3)
+        dx *= dout # 합성함수의 연쇄법칙 수행.
+        dx = dx / batch_size # 평균해준다 -> @@발산 막는 용도? / softmaxWithLoss이기 떄문에 이미 forward에서 cross_entropy로 loss를 더해주었기 때문에 bathc만큰 나누어 줌으로써 평균을 가지도록 하는듯
+       # print(f'dx.shape:{dx.shape}');exit(1)
 
         return dx
 
@@ -101,7 +105,7 @@ class Sigmoid:
         self.out = out
         return out
 
-    def backward(self, dout):
+    def backward(self, dout): # dout.shape : (30,3)
         dx = dout * (1.0 - self.out) * self.out
         return dx
 
