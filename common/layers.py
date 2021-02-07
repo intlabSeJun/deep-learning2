@@ -153,7 +153,7 @@ class Dropout:
 
 
 class Embedding:
-    def __init__(self, W):
+    def __init__(self, W): # 10000,100 random 가중치
         self.params = [W]
         self.grads = [np.zeros_like(W)]
         self.idx = None
@@ -161,7 +161,8 @@ class Embedding:
     def forward(self, idx):
         W, = self.params
         self.idx = idx
-        out = W[idx]
+        out = W[idx] # shape:(100,100)
+
         return out
 
     def backward(self, dout):

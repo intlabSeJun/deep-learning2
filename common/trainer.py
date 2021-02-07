@@ -27,11 +27,14 @@ class Trainer:
         start_time = time.time()
         for epoch in range(max_epoch):
             # 뒤섞기
-            idx = numpy.random.permutation(numpy.arange(data_size))
+            idx = numpy.random.permutation(numpy.arange(data_size)) # data_size만큼 random으로 순서를 섞어줌.
+
+            # contexts, targets
             x = x[idx]
             t = t[idx]
 
             for iters in range(max_iters):
+                # batch_size 만큼 contexts, targest 추출.
                 batch_x = x[iters*batch_size:(iters+1)*batch_size]
                 batch_t = t[iters*batch_size:(iters+1)*batch_size]
 
